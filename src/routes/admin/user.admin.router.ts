@@ -1,10 +1,13 @@
 import express, { Router } from 'express';
-import * as admin from '../../controllers/admin.controller';
+import * as user from '../../controllers/admin/user.controller';
+import * as residents from '../../controllers/admin/resident.controller';
 
 const router: Router = express.Router();
 
-router.put('/verify/:email', admin.verifyUser);
+router.put('/verify/:id', user.verifyUser);
 
-router.delete('/delete/:email', admin.deleteUser);
+router.delete('/delete/:email', user.deleteUser);
+
+router.get('/residents', residents.getAllVerifiedReidents);
 
 export default router;

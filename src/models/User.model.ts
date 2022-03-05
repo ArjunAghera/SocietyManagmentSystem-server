@@ -5,11 +5,15 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
+  OneToOne,
 } from 'typeorm';
+import { Complaint } from './Complaint.model';
+import { ResidentDetails } from './ResidentDetails.model';
 
 export enum userRole {
   RESIDENT = 'resident',
   WORKER = 'worker',
+  ADMIN = 'admin',
 }
 
 @Entity('users')
@@ -39,6 +43,12 @@ export class User extends BaseEntity {
     enum: userRole,
   })
   role: string;
+
+  @OneToOne(() => ResidentDetails, (resident) => resident.user)
+  resident: ResidentDetails;
+
+  @OneToOne(() => Complaint, (complaint) => complaint.user)
+  complaint: Complaint;
 
   @CreateDateColumn()
   created_at: Date;
