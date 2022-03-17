@@ -49,7 +49,10 @@ export const postFeedback: RequestHandler<any> = asyncWrap(async (req, res) => {
     if (user.role !== 'resident') {
       throwError(401, 'You are not a resident');
     }
-    const feedback = Feedback.create({ feedback: req.body.feedback });
+    const feedback = Feedback.create({
+      feedback: req.body.feedback,
+      seen: false,
+    });
     await feedback.save();
     res.status(200).json(feedback);
   } catch (err) {
@@ -61,12 +64,15 @@ export const postComplaint: RequestHandler<any> = asyncWrap(
   async (req, res) => {
     try {
       const user: any = req.user;
-      const userFound: any = await User.find({ where: { id: user.id } });
+      if (!user) throwError(401, 'No user found');
+      const userFound: any = await User.findOne({ where: { id: user.id } });
       if (user.role !== 'resident') {
         throwError(401, 'You are not a resident');
       }
+      console.log(userFound);
       const complaint = Complaint.create({
         complaint: req.body.complaint,
+        resolved: false,
         userId: user.id,
         user: userFound,
       });

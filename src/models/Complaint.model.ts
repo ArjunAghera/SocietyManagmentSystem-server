@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { User } from './User.model';
 
-@Entity('resident_details')
+@Entity('complaints')
 export class Complaint extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

@@ -16,3 +16,18 @@ export const getComplaints: RequestHandler<any> = asyncWrap(
     }
   },
 );
+
+export const putComplaintResolved: RequestHandler<any> = asyncWrap(
+  async (req, res) => {
+    try {
+      const feedbackId = req.params.id;
+      const feedback = await Complaint.update(
+        { id: feedbackId },
+        { resolved: true },
+      );
+      res.status(200).json(feedback);
+    } catch (err) {
+      throwError(500, err.message);
+    }
+  },
+);
