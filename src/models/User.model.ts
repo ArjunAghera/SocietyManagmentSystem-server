@@ -6,9 +6,13 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
   OneToOne,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Complaint } from './Complaint.model';
 import { ResidentDetails } from './ResidentDetails.model';
+import { WorkAssigned } from './WorkAssigned.model';
 
 export enum userRole {
   RESIDENT = 'resident',
@@ -47,8 +51,14 @@ export class User extends BaseEntity {
   @OneToOne(() => ResidentDetails, (resident) => resident.user)
   resident: ResidentDetails;
 
-  @OneToOne(() => Complaint, (complaint) => complaint.user)
-  complaint: Complaint;
+  @OneToMany(() => Complaint, (complaint) => complaint.user)
+  complaint: Complaint[];
+
+  @ManyToOne(() => WorkAssigned, (workAssigned) => workAssigned.user, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  workAssigned: WorkAssigned[];
 
   @CreateDateColumn()
   created_at: Date;

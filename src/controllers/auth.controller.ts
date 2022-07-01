@@ -12,6 +12,7 @@ export const postLogin: RequestHandler<any> = asyncWrap(
         name: user.name,
         isAdmin: user.is_admin,
         isVerified: user.is_verified,
+        role: user.role,
       });
     } catch (err) {
       console.error(err);

@@ -8,12 +8,12 @@ import {
 } from 'typeorm';
 
 @Entity('feedbacks')
-export class Feedback extends BaseEntity {
+export class Opinion extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
-  feedback: string;
+  opinion: string;
 
   @Column()
   seen: boolean;

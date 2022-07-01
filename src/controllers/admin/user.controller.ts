@@ -15,7 +15,6 @@ export const verifyUser: RequestHandler<any> = asyncWrap(async (req, res) => {
         userId: id,
         user: user,
       });
-      console.log(residentDetails);
       await residentDetails.save();
       const updateUser = await User.update({ id }, { is_verified: true });
       res.status(200).json({ updateUser, residentDetails });

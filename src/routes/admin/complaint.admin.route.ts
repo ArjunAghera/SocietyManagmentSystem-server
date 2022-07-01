@@ -7,4 +7,6 @@ router.get('/all', complaint.getComplaints);
 
 router.put('/resolved/:id', complaint.putComplaintResolved);
 
+router.post('/assign-work/:id', complaint.assignWork);
+
 export default router;

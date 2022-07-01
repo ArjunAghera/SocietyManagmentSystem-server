@@ -1,12 +1,12 @@
 import { RequestHandler } from 'express';
 import { throwError } from '../../helpers/ErrorHandler.helper';
 import { asyncWrap } from '../../middlewares/async.middleware';
-import { Feedback } from '../../models/Feedback.model';
+import { Opinion } from '../../models/Opinion.model';
 
 export const getFeedbacks: RequestHandler<any> = asyncWrap(
   async (_req, res) => {
     try {
-      const feedback = await Feedback.find({ where: { seen: false } });
+      const feedback = await Opinion.find({ where: { seen: false } });
       res.status(200).json(feedback);
     } catch (err) {
       throwError(500, err.message);
@@ -17,12 +17,9 @@ export const getFeedbacks: RequestHandler<any> = asyncWrap(
 export const putFeedbackSeen: RequestHandler<any> = asyncWrap(
   async (req, res) => {
     try {
-      const feedbackId = req.params.id;
-      const feedback = await Feedback.update(
-        { id: feedbackId },
-        { seen: true },
-      );
-      res.status(200).json(feedback);
+      const opinionId = req.params.id;
+      const opinion = await Opinion.update({ id: opinionId }, { seen: true });
+      res.status(200).json(opinion);
     } catch (err) {
       throwError(500, err.message);
     }

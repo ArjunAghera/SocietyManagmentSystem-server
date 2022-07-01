@@ -31,12 +31,14 @@ export const gellAllSizes: RequestHandler<any> = asyncWrap(
 export const postCreatePlan: RequestHandler<any> = asyncWrap(
   async (req, res) => {
     try {
+      const amount = req.body.amount * 100;
+      const amtStr = amount.toString();
       const plan = await paymentgateway.plans.create({
-        period: req.body.period,
+        period: 'monthly',
         interval: 1,
         item: {
           name: req.body.planName,
-          amount: req.body.amount,
+          amount: amtStr,
           currency: 'INR',
           description: req.body.planDescription,
         },

@@ -8,6 +8,8 @@ router.put('/verify/:id', user.verifyUser);
 
 router.delete('/delete/:email', user.deleteUser);
 
-router.get('/residents', residents.getAllVerifiedReidents);
+router.get('/verified/residents', residents.getAllVerifiedReidents);
+
+router.get('/unverified/residents', residents.getAllUnverifiedResident);
 
 export default router;

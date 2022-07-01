@@ -8,6 +8,7 @@ import authRoutes from '../routes/auth.route';
 import registerRoutes from '../routes/register.route';
 import adminRoutes from '../routes/admin.route';
 import residentRoutes from './resident.route';
+import workerRoutes from './worker.route';
 import { throwError } from '../helpers/ErrorHandler.helper';
 
 const api = express();
@@ -22,6 +23,7 @@ api.use('/auth', authRoutes);
 api.use('/register', registerRoutes);
 api.use('/admin', isAuthenticated, isAdmin, adminRoutes);
 api.use('/resident', isAuthenticated, residentRoutes);
+api.use('/worker', isAuthenticated, workerRoutes);
 api.use('/', () => {
   throwError(404, 'Route does not exist');
 });

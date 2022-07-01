@@ -3,9 +3,10 @@ import { paymentgateway } from '../config/razorpay.config';
 import { throwError } from '../helpers/ErrorHandler.helper';
 import { asyncWrap } from '../middlewares/async.middleware';
 import { Complaint } from '../models/Complaint.model';
-import { Feedback } from '../models/Feedback.model';
+import { Opinion } from '../models/Opinion.model';
+import { Plan } from '../models/Plan.model';
 import { ResidentDetails } from '../models/ResidentDetails.model';
-import { User } from '../models/User.model';
+import { User, userRole } from '../models/User.model';
 
 export const residentDetails: RequestHandler<any> = asyncWrap(
   async (req, res) => {
@@ -33,8 +34,8 @@ export const postCreateSubscription: RequestHandler<any> = asyncWrap(
   async (req, res) => {
     try {
       const subscription = await paymentgateway.subscriptions.create({
-        plan_id: req.params.plan_id,
-        total_count: 1,
+        plan_id: req.params.id,
+        total_count: 6,
       });
       res.status(200).json(subscription);
     } catch (err) {
@@ -43,18 +44,26 @@ export const postCreateSubscription: RequestHandler<any> = asyncWrap(
   },
 );
 
-export const postFeedback: RequestHandler<any> = asyncWrap(async (req, res) => {
+// export const postSubscription: RequestHandler<any> = asyncWrap(async (req, res) => {
+//   try{
+//     const subscription = await paymentgateway.subscriptions.fetch();
+//   } catch (err) {
+//     throwError(500, err.message);
+//   }
+// })
+
+export const postOpinion: RequestHandler<any> = asyncWrap(async (req, res) => {
   try {
     const user: any = req.user;
     if (user.role !== 'resident') {
       throwError(401, 'You are not a resident');
     }
-    const feedback = Feedback.create({
-      feedback: req.body.feedback,
+    const opinion = Opinion.create({
+      opinion: req.body.opinion,
       seen: false,
     });
-    await feedback.save();
-    res.status(200).json(feedback);
+    await opinion.save();
+    res.status(200).json(opinion);
   } catch (err) {
     throwError(500, err.message);
   }
@@ -69,7 +78,6 @@ export const postComplaint: RequestHandler<any> = asyncWrap(
       if (user.role !== 'resident') {
         throwError(401, 'You are not a resident');
       }
-      console.log(userFound);
       const complaint = Complaint.create({
         complaint: req.body.complaint,
         resolved: false,
@@ -83,6 +91,14 @@ export const postComplaint: RequestHandler<any> = asyncWrap(
     }
   },
 );
+
+// export const validateSubscription: RequestHandler<any> = asyncWrap( async (req, res) => {
+//   try{
+
+//   } catch (err) {
+//     throwError(500, err.message);
+//   }
+// })
 
 export const getComplaints: RequestHandler<any> = asyncWrap(
   async (req, res) => {
@@ -98,6 +114,62 @@ export const getComplaints: RequestHandler<any> = asyncWrap(
       } else {
         res.status(401).json('You are not resident');
       }
+    } catch (err) {
+      throwError(500, err.message);
+    }
+  },
+);
+
+//TODO: export const getWorkStatus: RequestHandler<any> = asyncWrap(async (req, res) => {
+//   try {
+//     const user: any = req.user;
+//     if (user.role === 'resident') {
+//       const plans = await
+//         .execute();
+
+//         res.status(200).json(plans);
+//     } else {
+//       res.status(401).json('You are not resident');
+//     }
+//   } catch (err) {
+//     throwError(500, err.message);
+//   }
+// })
+
+export const getResidentMaintenancePlan: RequestHandler<any> = asyncWrap(
+  async (req, res) => {
+    try {
+      const name = req.params.size;
+      const user: any = req.user;
+      if (user.role === userRole.RESIDENT) {
+        const plans = await Plan.find({ where: { name } });
+        res.status(200).json(plans);
+      } else {
+        res.status(401).json('You are not resident');
+      }
+    } catch (err) {
+      throwError(500, err.message);
+    }
+  },
+);
+
+export const verifyPayment: RequestHandler<any> = asyncWrap(
+  async (req, _res) => {
+    try {
+      const razorpaySignature = req.body.razorpay_signature;
+      const paymentId = req.body.razorpay_payment_id;
+      const razorpaySubscriptionId = req.body.razorpayment_subscription_id;
+      const secret: any = process.env.RAZORPAY_SECRET_KEY;
+
+      const verify = await paymentgateway.payments.paymentVerification(
+        {
+          razorpaySignature,
+          paymentId,
+          razorpaySubscriptionId,
+        },
+        secret,
+      );
+      console.log(verify);
     } catch (err) {
       throwError(500, err.message);
     }

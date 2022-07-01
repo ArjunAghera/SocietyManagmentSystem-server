@@ -7,8 +7,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
+  ManyToOne,
 } from 'typeorm';
 import { User } from './User.model';
+import { WorkAssigned } from './WorkAssigned.model';
 
 @Entity('complaints')
 export class Complaint extends BaseEntity {
@@ -24,11 +26,17 @@ export class Complaint extends BaseEntity {
   @Column({ nullable: true })
   userId: string;
 
-  @OneToOne(() => User, (user) => user.complaint, {
+  @Column({ nullable: true })
+  workAssignedId: string;
+
+  @ManyToOne(() => User, (user) => user.complaint, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
   user: User;
+
+  @OneToOne(() => WorkAssigned, (workAssigned) => workAssigned.complaint)
+  workAssigned: WorkAssigned;
 
   @CreateDateColumn()
   created_at: Date;

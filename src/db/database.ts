@@ -1,10 +1,11 @@
 import { createConnection } from 'typeorm';
 import { Complaint } from '../models/Complaint.model';
-import { Feedback } from '../models/Feedback.model';
+import { Opinion } from '../models/Opinion.model';
 import { Plan } from '../models/Plan.model';
 import { ResidentDetails } from '../models/ResidentDetails.model';
 import { Size } from '../models/Size.model';
 import { User } from '../models/User.model';
+import { WorkAssigned } from '../models/WorkAssigned.model';
 
 const db = async (cb) => {
   try {
@@ -17,7 +18,15 @@ const db = async (cb) => {
           rejectUnauthorized: false,
         },
       },
-      entities: [User, Plan, ResidentDetails, Size, Feedback, Complaint],
+      entities: [
+        User,
+        Plan,
+        ResidentDetails,
+        Size,
+        Opinion,
+        Complaint,
+        WorkAssigned,
+      ],
       synchronize: true,
     });
     console.log('Connected to Postgres');
